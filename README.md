@@ -1,9 +1,6 @@
-# bonovalley-platform-cli — binary releases
+# bonovalley-platform-cli
 
-This repository hosts **prebuilt CLI binaries only**. The source code lives on Bitbucket:
-<https://bitbucket.org/bonovalley/bonovalley-platform-cli>
-
-The CLI lets Bonovalley integration partners build, register, and `push` integrations to the platform from the command line. Pre-built binaries are published here so partners can download and use the CLI without needing Go installed.
+The Bonovalley CLI lets integration partners build, register, and `push` integrations to the Bonovalley platform from the command line. This repository hosts **prebuilt binaries + the partner-facing documentation**. Source code is held privately by Bonovalley — contact your point of contact if you need access.
 
 ---
 
@@ -98,12 +95,13 @@ Run `bonovalley-platform <command> --help` for any command's options, or `bonova
 
 ---
 
-## Full docs (in the source repo)
+## Full docs (in this repo)
 
-- **[User guide](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/docs/USER_GUIDE.md)** — end-to-end usage walkthrough (setup, configuration, every command by task)
-- [Install / upgrade / uninstall / troubleshooting](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/docs/INSTALL.md) — comprehensive partner install reference
-- [Quickstart + overview](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/README.md)
-- [Changelog](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/CHANGELOG.md) — per-release notes
+- **[User guide](docs/USER_GUIDE.md)** — end-to-end usage walkthrough (setup, configuration, every command by task)
+- [Install / upgrade / uninstall / troubleshooting](docs/INSTALL.md) — comprehensive partner install reference
+- [Changelog](CHANGELOG.md) — per-release notes
+- [Environment variables](docs/ENV_VARS.md) — env var override reference (advanced)
+- [Full command catalog + design notes](docs/SOP.md) — for partners who want to understand the system in depth
 
 ---
 
@@ -119,4 +117,4 @@ Contact your Bonovalley point of contact.
 
 ---
 
-*This README is auto-published from the source repo by `scripts/upload-release.ps1`. Edits made directly on GitHub will be overwritten on the next release. To change it, edit `docs/GITHUB_RELEASES_README.md` in the Bitbucket source repo.*
+*This README and the docs above are auto-published from Bonovalley's internal source repo. Edits made directly on GitHub will be overwritten on the next release.*
