@@ -542,6 +542,48 @@ One entry per release, newest at the top. Each entry follows the template below.
 
 ### Entries
 
+### v1.0.1 — 2026-05-24 UTC
+
+- **Triggered by:** USER (Amit Arora) — bug report: `login` failed in v1.0.0 with `open ./engine/tools/bv-cli-oauth2/oclient2/services_prod.json: The system cannot find the path specified.`
+- **Source tag:** `bitbucket.org/bonovalley/bonovalley-platform-cli` @ commit `891fcb6` (Release v1.0.1 commit itself)
+- **Release page:** <https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/tag/v1.0.1>
+- **Commits included** (since v1.0.0 tag at `c280c26` — 17 commits, mostly release-engineering polish + the login fix):
+  - `ae32c5f` release: versioned filenames + REST-API upload script
+  - `cdb02d5` release: migrate Bitbucket upload auth from app password to Atlassian API token
+  - `1204363` release: credentials-file fallback for upload-release.ps1 + tracking doc
+  - `37f399d` release: move credentials file into project as .env.bonovalley-release-credentials
+  - `4a53a86` release: add committed .example template for release credentials
+  - `dd91b65` docs: rewrite CLAUDE.md for current state of the codebase
+  - `4e84f1b` release: pivot from Bitbucket Downloads to GitHub Releases
+  - `036b866` release: v1.0.0 shipped — journal entry + README URL fix
+  - `ec18fe8` creds: fill in expiry dates for the GitHub release-uploads PAT
+  - `d251fbb` docs: add INSTALL.md + release announcement template
+  - `697bc7c` release: auto-sync GitHub repo README + release body per upload
+  - `6ac68df` docs: add USER_GUIDE.md — task-oriented end-to-end partner walkthrough
+  - `83d74a7` release: sync 4 partner-facing docs to GitHub
+  - `4e9afdd` release: mirror all partner-safe docs to GitHub (source repo is private)
+  - `891fcb6` Release v1.0.1 — fix: embed OAuth config + login HTML template
+- **Build:** 4 binaries (8.0-8.4 MB), SHA256SUMS-v1.0.1.
+- **Smoke (§6 step-7):** `--version` reports `v1.0.1 (commit 891fcb6, built 2026-05-24)` OK; `doctor` 6/6 OK.
+- **Push:** master + tag v1.0.1 pushed cleanly.
+- **Upload:** GitHub Releases API; all 5 assets uploaded OK; release body PATCHed to current template; CHANGELOG.md sync'd to GitHub (commit `1015ca8`); other docs already in sync.
+- **URL verify (§6 step-10):** HTTP 302 → 200, content-length 8,738,304 bytes (matches Windows binary).
+- **Partner journey (§6 step-11):** curl-download to a temp dir → `--version` reports v1.0.1 → `doctor` 6/6 OK. **Login was NOT exercised in this step** — that's the exact bug that ate v1.0.0, and the SOP step 11 still can't simulate the OAuth browser flow non-interactively. See "Surprises" #2.
+- **Surprises / improvements**:
+  1. Followed the v1.0.0 journal's lesson: committed all script + content changes BEFORE running `git tag`, so this time the binary's embedded commit (`891fcb6`) matches the tag commit. No drift.
+  2. **Partner-journey simulation does not catch login bugs.** The §6 step-11 download → --version → doctor sequence runs cleanly even when the OAuth flow is broken end-to-end. v1.0.0 shipped to partners despite a release process that "passed" all automated checks. **Followup for v1.0.2 SOP**: add an explicit "USER manually runs `login` from the just-downloaded binary" gate between step 11 and step 12. Until that lands, every release should include a manual login verification by the USER after publication.
+  3. Bug class noted for SOP-improvement: any future "binary reads file from `./engine/...`" code path is structurally broken. Added `oclient2_test.go` to guard the specific files we just embedded; a broader linter / vet rule to flag `os.Open("./engine/...")` patterns in main code would be sturdier.
+- **Rollback:** N/A (v1.0.0 left in place per "never reuse a tag" — partners simply upgrade to v1.0.1).
+- **Partner action required:** all v1.0.0 users must upgrade. Suggested message per the §11 announcement template:
+  > Subject: bonovalley-platform-cli v1.0.1 is out — please upgrade
+  >
+  > v1.0.0 had a critical bug where `bonovalley-platform login` failed on first run with "no such path" — sorry. v1.0.1 fixes it.
+  >
+  > Download: https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/tag/v1.0.1
+  > Upgrade: replace your existing binary, retry `login`. Your existing state is preserved.
+
+---
+
 ### v1.0.0 — 2026-05-24 UTC
 
 - **Triggered by:** USER (Amit Arora) / chat session
