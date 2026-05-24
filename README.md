@@ -100,8 +100,9 @@ Run `bonovalley-platform <command> --help` for any command's options, or `bonova
 
 ## Full docs (in the source repo)
 
-- [Install / upgrade / uninstall / troubleshooting](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/docs/INSTALL.md) — comprehensive partner guide
-- [Quickstart + command catalog](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/README.md)
+- **[User guide](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/docs/USER_GUIDE.md)** — end-to-end usage walkthrough (setup, configuration, every command by task)
+- [Install / upgrade / uninstall / troubleshooting](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/docs/INSTALL.md) — comprehensive partner install reference
+- [Quickstart + overview](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/README.md)
 - [Changelog](https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/master/CHANGELOG.md) — per-release notes
 
 ---
