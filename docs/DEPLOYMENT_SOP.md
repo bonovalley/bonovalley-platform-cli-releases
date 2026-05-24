@@ -90,7 +90,7 @@ I (Claude) will:
 
 1. Echo back the version + the commits that will be included (so you can sanity-check before anything is committed).
 2. Wait for your **"go"** before I touch `CHANGELOG.md`, tag, or push.
-3. Execute steps 4 through 13 in order; pause for your input at step 10 if I don't have Bitbucket credentials cached.
+3. Execute steps 4 through 14 in order; pause for your input at step 8 (manual `login` verification on the locally-built binary).
 4. Report end-of-run with the journal entry.
 
 If you want a **dry run** (everything except the push + upload + journal commit), say so explicitly: "Deploy v1.0.0 — dry run". I'll build artifacts under `dist/`, smoke-test them, and stop short of any irreversible action.
@@ -152,7 +152,7 @@ No CI is wired up today — every release is a manual run of `scripts/build-rele
 
 ---
 
-## 6. Release procedure (steps 1-13)
+## 6. Release procedure (steps 1-14)
 
 Each step shows its owner in **(USER)** / **(CLAUDE)** / **(BOTH)**, the estimated time, and the exact commands.
 
@@ -224,7 +224,41 @@ The script:
 
 If either fails, I stop, delete the local tag (`git tag -d v1.0.0`), and report back so we can fix on master.
 
-### Step 8 — **(CLAUDE)** Push commit + tag to origin · *~5s*
+### Step 8 — **(BOTH)** USER manually verifies `login` on the local binary · *~2 minutes*
+
+**Why this step exists.** Step 7's `--version` + `doctor` is fast but can't exercise the OAuth browser flow. v1.0.0 shipped with `login` completely broken because the SOP at the time had no manual gate — all automated checks passed and the bug only surfaced when a partner tried to log in. This step is the floor against that class of regression.
+
+What CLAUDE does:
+
+1. Pause the release and prompt USER:
+   > **Please manually verify `login` works on the locally-built v1.0.0 binary.** Nothing has been published yet — if this fails I'll roll back without any partner-visible artifact.
+   >
+   > Run these in your terminal:
+   > ```powershell
+   > .\dist\v1.0.0\bonovalley-platform-v1.0.0-windows-amd64.exe login
+   > # Complete the OAuth flow in the browser. Should land on "Connection successful".
+   >
+   > .\dist\v1.0.0\bonovalley-platform-v1.0.0-windows-amd64.exe doctor
+   > # All 6 checks should pass, including "Logged in (deployKey present)".
+   > ```
+   >
+   > Reply **"login OK"** to continue, or paste any error and I'll diagnose.
+
+2. Wait for USER's reply.
+
+3. On `login OK`: proceed to step 9 (push origin).
+
+4. On error: STOP. Do NOT push the tag. Delete the local tag (`git tag -d v1.0.0`), fix on master, restart from step 2 — the rejected version number stays unused, free to bump and try again. No GitHub release is created, no binary is publicly visible, no rollback procedure needed.
+
+What USER does:
+
+- Run the two commands above (the `dist/<Version>/` binary on this machine, not any prior install).
+- For login: a browser opens to the Bonovalley OAuth page; sign in; the browser redirects back to `http://127.0.0.1:8080/...` and shows a "Connection successful" page; the terminal command exits cleanly. (Total ~30 seconds.)
+- Reply in chat with either:
+  - **"login OK"** — clean run + doctor 6/6 → CLAUDE continues
+  - The error message + any unusual screen content → CLAUDE diagnoses
+
+### Step 9 — **(CLAUDE)** Push commit + tag to origin · *~5s*
 
 ```bash
 git push origin master       # the release commit
@@ -233,7 +267,7 @@ git push origin v1.0.0       # the tag itself
 
 This is the **first irreversible step**. Up to here, everything is local; from here on, rollback requires cutting a new patch (see §15).
 
-### Step 9 — **(CLAUDE)** Upload binaries to GitHub Releases · *~30s*
+### Step 10 — **(CLAUDE)** Upload binaries to GitHub Releases · *~30s*
 
 > **Distribution-host note.** Bonovalley's Bitbucket workspace is on the Free
 > plan, which (since 2025) returns HTTP 402 on any Repository Downloads
@@ -275,7 +309,7 @@ Done. Release page:
 
 No UI fallback today — GitHub Releases' web UI uploads work fine, but if the API is failing it's almost always either a token-scope issue or a missing `GH_REPO`, both of which are faster to fix than dragging files through a browser.
 
-### Step 10 — **(CLAUDE)** Verify the public URL serves the binary · *~5s*
+### Step 11 — **(CLAUDE)** Verify the public URL serves the binary · *~5s*
 
 ```bash
 curl -sSIL "https://github.com/<GH_REPO>/releases/download/v1.0.0/bonovalley-platform-v1.0.0-windows-amd64.exe" \
@@ -286,7 +320,7 @@ curl -sSIL "https://github.com/<GH_REPO>/releases/download/v1.0.0/bonovalley-pla
 
 If the URL 404s, the upload didn't take — retry §9 (the script is idempotent; existing assets are skipped, missing ones get re-tried).
 
-### Step 11 — **(CLAUDE)** Simulate partner install + first-run journey · *~30s*
+### Step 12 — **(CLAUDE)** Simulate partner install + first-run journey · *~30s*
 
 This is the new step that didn't exist in the old SOP. It catches the most common "the binary works on my machine but partners can't use it" class of bugs.
 
@@ -315,7 +349,7 @@ I report each line's result. If `doctor` shows anything unexpected (other than "
 
 **Note:** the full partner journey (`login` → `init` → `register` → `push`) needs interactive user input (OAuth browser flow). That's outside this SOP's automation; it'd be done by a partner whenever they pick up the new binary.
 
-### Step 12 — **(CLAUDE)** Append release journal entry · *~10s*
+### Step 13 — **(CLAUDE)** Append release journal entry · *~10s*
 
 I append a new section to the **Release Journal** (see §14 below) with:
 
@@ -335,7 +369,7 @@ git commit -m "Release journal: v1.0.0"
 git push origin master
 ```
 
-### Step 13 — **(CLAUDE)** Report completion · *~5s*
+### Step 14 — **(CLAUDE)** Report completion · *~5s*
 
 I say something like:
 
@@ -347,7 +381,7 @@ You acknowledge or flag any issues. SOP ends.
 
 ## 7. Rollback
 
-If a release is found broken **after step 8 (push)**:
+If a release is found broken **after step 9 (push)**:
 
 1. **Pull the binaries** from Bitbucket Downloads (UI: each row has a delete icon, or `DELETE /2.0/repositories/.../downloads/<filename>` via REST).
 2. **Do NOT delete the git tag** — it stays for traceability. Partners who already downloaded have it; deleting the tag would just confuse the history.
@@ -366,8 +400,8 @@ Tag deletion + re-push is forbidden because cached partner downloads cannot be i
 1. Pick a version per the semver table (§4).
 2. Tell Claude: "Deploy vX.Y.Z"
 3. Confirm the commit list at the §6 step-2 checkpoint with "go"
-4. (Optional) Provide a Bitbucket app password at §6 step-9a
-5. Done — Claude reports completion at §6 step-13.
+4. Manually run `login` from the locally-built binary at §6 step-8 (one-off, ~2 min, before anything is published)
+5. Done — Claude reports completion at §6 step-14.
 ```
 
 ### CLAUDE cheat sheet (the full sequence as one block)
@@ -390,35 +424,39 @@ git tag -a $ver -m "Release $ver"
 # §6 step-6: build
 .\scripts\build-release.ps1 -Version $ver
 
-# §6 step-7: smoke
-.\dist\$ver\bonovalley-platform-windows-amd64.exe --version
-.\dist\$ver\bonovalley-platform-windows-amd64.exe doctor
+# §6 step-7: smoke (CLAUDE-automated)
+.\dist\$ver\bonovalley-platform-$ver-windows-amd64.exe --version
+.\dist\$ver\bonovalley-platform-$ver-windows-amd64.exe doctor
 
-# §6 step-8: push
+# §6 step-8: MANUAL login verification (USER, ~2 min) — last gate before
+# anything is published. If login fails here, git tag -d $ver and fix on
+# master without touching origin.
+.\dist\$ver\bonovalley-platform-$ver-windows-amd64.exe login
+.\dist\$ver\bonovalley-platform-$ver-windows-amd64.exe doctor   # now 6/6 incl. "Logged in"
+
+# §6 step-9: push (irreversible from here)
 git push origin master
 git push origin $ver
 
-# §6 step-9a: REST upload (loop over the 5 files)
-foreach ($f in Get-ChildItem ".\dist\$ver") {
-    curl -X POST -u "$env:USERNAME`:$env:APP_PASSWORD" `
-         -F "files=@$($f.FullName)" `
-         https://api.bitbucket.org/2.0/repositories/bonovalley/bonovalley-platform-cli/downloads
-}
+# §6 step-10: GitHub Releases upload (script reads creds from .env)
+pwsh .\scripts\upload-release.ps1 -Version $ver
+# (script: PATCHes release notes, POSTs 5 assets, syncs 8 docs to GitHub)
 
-# §6 step-10: verify URL
-curl -sSI https://bitbucket.org/bonovalley/bonovalley-platform-cli/downloads/bonovalley-platform-windows-amd64.exe | head -3
+# §6 step-11: verify the public URL serves
+curl -sSIL "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/download/$ver/bonovalley-platform-$ver-windows-amd64.exe" | head -6
 
-# §6 step-11: partner journey
+# §6 step-12: partner journey (curl + --version + doctor only — login is
+# manual, already verified at step 8)
 $TMP = New-TemporaryFile | %{ Remove-Item $_; New-Item -Type Directory -Path $_ }
 Push-Location $TMP
-curl -sSL -o bonovalley-platform.exe https://bitbucket.org/bonovalley/bonovalley-platform-cli/downloads/bonovalley-platform-windows-amd64.exe
-.\bonovalley-platform.exe --version
-.\bonovalley-platform.exe doctor
+curl -sSL -o bv.exe "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/download/$ver/bonovalley-platform-$ver-windows-amd64.exe"
+.\bv.exe --version
+.\bv.exe doctor
 Pop-Location
 Remove-Item -Recurse -Force $TMP
 
-# §6 step-12: journal
-notepad docs\DEPLOYMENT_SOP.md  # append entry under §14
+# §6 step-13: journal
+notepad docs\DEPLOYMENT_SOP.md   # append entry under §12 release journal
 git commit -am "Release journal: $ver"
 git push origin master
 ```
@@ -466,7 +504,7 @@ Full docs at <https://bitbucket.org/bonovalley/bonovalley-platform-cli/src/maste
 | Trigger | What to update |
 |---|---|
 | Add a new release target (e.g. windows-arm64) | Build matrix in `scripts/build-release.ps1` AND the §3 release-artifacts table |
-| Move to automated releases via Bitbucket Pipelines | Replace the manual §6 steps 6-10 with a `git push origin vX.Y.Z` → Pipeline trigger; keep the manual fallback documented |
+| Move to automated releases via Bitbucket Pipelines | Replace the manual §6 steps 6-11 with a `git push origin vX.Y.Z` → Pipeline trigger; keep the manual fallback documented. Note step 8 (USER manual login verification) cannot be automated — it stays manual. |
 | Switch artifact host (e.g., to GitHub Releases) | URLs throughout; the build script stays the same |
 | Change in versioning policy | §4 versioning section |
 | Add a new partner OS | §9 install table |
@@ -519,7 +557,9 @@ Always link to the full changelog so anyone wanting more detail has it; never pa
 
 ## 12. Release journal
 
-One entry per release, newest at the top. Each entry follows the template below. **Both** USER and CLAUDE can append; in practice CLAUDE writes the entry at step 12 of the deploy run, and USER may add notes later (e.g., "partner X reported they couldn't run on cmd.exe — issue tracked at …").
+One entry per release, newest at the top. Each entry follows the template below. **Both** USER and CLAUDE can append; in practice CLAUDE writes the entry at step 13 of the deploy run, and USER may add notes later (e.g., "partner X reported they couldn't run on cmd.exe — issue tracked at …").
+
+> **Note on past entries.** Step numbers referenced in v1.0.0 and v1.0.1 entries (e.g. "§6 step-7", "§6 step-10") reflect the SOP version at the time of release. The SOP grew a new step-8 (USER manual login verification) between v1.0.1 and v1.0.2, so post-v1.0.2 entries use the renumbered scheme (smoke=7, login=8, push=9, upload=10, URL=11, journey=12, journal=13, report=14).
 
 ### Template
 
