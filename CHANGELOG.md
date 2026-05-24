@@ -10,6 +10,12 @@ Each entry's date is the date that release was **tagged + uploaded to Bitbucket 
 
 (Add new lines here as commits land. They will be moved into the next versioned section at release time.)
 
+## [v1.0.1] — 2026-05-24
+
+### Fixed
+
+- **Critical login-blocking bug.** `bonovalley-platform login` in v1.0.0 errored on first run with `open ./engine/tools/bv-cli-oauth2/oclient2/services_prod.json: The system cannot find the path specified.` Cause: the OAuth client read its config and HTML template from disk via paths that only exist when the binary runs from the source-repo root. Embedded both via `go:embed` so the binary is self-contained regardless of install location. Added `oclient2_test.go` to guard against future regressions of this pattern. Partners on v1.0.0 must upgrade.
+
 ## [v1.0.0] — 2026-05-24
 
 First public release.
