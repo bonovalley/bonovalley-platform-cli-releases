@@ -1,10 +1,12 @@
+<!-- SYNCED TO GitHub via scripts/upload-release.ps1. Source-of-truth is the Bitbucket repo. Edit there, then run: pwsh ./scripts/upload-release.ps1 -SyncDocsOnly -->
+
 # Changelog
 
 All notable changes to `bonovalley-platform-cli` are documented here.
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Each entry's date is the date that release was **tagged + uploaded to Bitbucket Downloads**, not the date the underlying work merged. See [`docs/DEPLOYMENT_SOP.md`](docs/DEPLOYMENT_SOP.md) for the release procedure.
+Each entry's date is the date that release was **tagged + published to the GitHub releases page**, not the date the underlying work merged.
 
 ## [Unreleased]
 
