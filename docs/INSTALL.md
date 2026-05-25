@@ -1,8 +1,8 @@
+<!-- SYNCED TO GitHub via scripts/upload-release.ps1. Source-of-truth is this Bitbucket repo. Edit here, then run: pwsh ./scripts/upload-release.ps1 -SyncDocsOnly -->
+
 # Installing bonovalley-platform-cli
 
 Partner-facing install + upgrade + uninstall + troubleshooting guide.
-
-If you maintain the CLI itself (cutting releases), see [`docs/DEPLOYMENT_SOP.md`](DEPLOYMENT_SOP.md) instead.
 
 Releases live at: <https://github.com/bonovalley/bonovalley-platform-cli-releases/releases>
 
