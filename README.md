@@ -1,3 +1,5 @@
+<!-- SYNCED TO GitHub as the public repo's README.md via scripts/upload-release.ps1. Source-of-truth is this Bitbucket repo. Edit here, then run: pwsh ./scripts/upload-release.ps1 -SyncDocsOnly -->
+
 # bonovalley-platform-cli
 
 The Bonovalley CLI lets integration partners build, register, and `push` integrations to the Bonovalley platform from the command line. This repository hosts **prebuilt binaries + the partner-facing documentation**. Source code is held privately by Bonovalley — contact your point of contact if you need access.
