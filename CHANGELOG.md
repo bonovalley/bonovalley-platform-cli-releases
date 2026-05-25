@@ -10,6 +10,8 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+## [v1.0.2] — 2026-05-25
+
 ### Changed
 
 - `init <name> --force` now **preserves any `.git/` directory** in the target folder. Previously the entire folder was wiped, which destroyed the developer's commit history when re-initing a project they had already put under version control. With the fix, `--force` wipes every entry in the target *except* `.git/`, so the dev can run `git status` / `git diff` after a re-init to see exactly what the template refresh changed. (Three deletion paths were involved — `preflightTarget`, `Extract`, and `ApplyIgnore` — all three now skip `.git/`.)
