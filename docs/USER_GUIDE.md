@@ -55,7 +55,7 @@ Before logging in, run the diagnostics:
 bonovalley-platform doctor
 ```
 
-Expected on a fresh install: **5 of 6 checks pass**. The one that fails (`Logged in (deployKey present)`) is expected — you haven't logged in yet. After step 2.3 below it goes green.
+Expected on a fresh install: **5 of 7 checks pass**. The two that fail (`Logged in (deployKey present)` and `deployKey accepted by platform`) are expected — you haven't logged in yet. After step 2.3 below they both go green.
 
 If anything else fails, fix it before continuing — `doctor` tells you exactly what to do.
 
@@ -75,7 +75,7 @@ This:
 Verify:
 
 ```bash
-bonovalley-platform doctor      # should now be 6/6 ✔
+bonovalley-platform doctor      # should now be 7/7 ✔
 bonovalley-platform config get  # see what login set up
 ```
 
@@ -308,7 +308,7 @@ Run before push if anything feels off:
 bonovalley-platform doctor
 ```
 
-6 checks, ~2 seconds. Catches environment problems before they bite a 2-minute build.
+7 checks, ~2 seconds. Catches environment problems before they bite a 2-minute build. The 7th check (`deployKey accepted by platform`) hits an authenticated endpoint to catch silent session-expiry — a deployKey file can sit on disk indefinitely, but the access token wrapped inside it has a ~1-hour TTL, so the file-existence check alone isn't enough to know your session still works.
 
 ### 6.3 Reading logs
 
@@ -359,7 +359,7 @@ Run `bonovalley-platform <command> --help` for full flag detail on any of these.
 |---|---|
 | `login` | OAuth flow; saves deployKey to `~/.bonovalleyrc` and default org to config |
 | `logout` | Removes deployKey |
-| `doctor` | 6-check pre-flight; safe to run anywhere |
+| `doctor` | 7-check pre-flight; safe to run anywhere |
 | `config get [key]` | Print one or all config settings |
 | `config set <key> <value>` | Update a config setting |
 | `init <name>` | Scaffold a new integration project from the template |
