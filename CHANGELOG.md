@@ -10,7 +10,13 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
-(Add new lines here as commits land. They will be moved into the next versioned section at release time.)
+### Changed
+
+- `init <name> --force` now **preserves any `.git/` directory** in the target folder. Previously the entire folder was wiped, which destroyed the developer's commit history when re-initing a project they had already put under version control. With the fix, `--force` wipes every entry in the target *except* `.git/`, so the dev can run `git status` / `git diff` after a re-init to see exactly what the template refresh changed. (Three deletion paths were involved — `preflightTarget`, `Extract`, and `ApplyIgnore` — all three now skip `.git/`.)
+
+### Added
+
+- `doctor` adds a 7th check: **"deployKey accepted by platform"**. The existing "Logged in" check only verifies that `~/.bonovalleyrc` exists on disk; the new check makes a small authenticated GET against the platform API to confirm the deployKey is still accepted. This catches the silent session-expiry state (the Ory access token wrapped inside the deployKey has ~1-hour TTL) BEFORE a partner spends 2-3 minutes on a `push` that will then 401. Fresh-install behaviour: 5/7 pass (checks 4 + 7 fail until `login`). Logged-in: 7/7.
 
 ## [v1.0.1] — 2026-05-24
 
