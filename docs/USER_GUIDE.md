@@ -1,3 +1,5 @@
+<!-- SYNCED TO GitHub via scripts/upload-release.ps1. Source-of-truth is this Bitbucket repo. Edit here, then run: pwsh ./scripts/upload-release.ps1 -SyncDocsOnly -->
+
 # bonovalley-platform-cli — user guide
 
 End-to-end guide for integration partners using the CLI. If you're trying to **install or upgrade**, see [`docs/INSTALL.md`](INSTALL.md) instead — this guide assumes you already have the binary.
