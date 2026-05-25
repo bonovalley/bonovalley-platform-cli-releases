@@ -100,8 +100,6 @@ Run `bonovalley-platform <command> --help` for any command's options, or `bonova
 - **[User guide](docs/USER_GUIDE.md)** — end-to-end usage walkthrough (setup, configuration, every command by task)
 - [Install / upgrade / uninstall / troubleshooting](docs/INSTALL.md) — comprehensive partner install reference
 - [Changelog](CHANGELOG.md) — per-release notes
-- [Environment variables](docs/ENV_VARS.md) — env var override reference (advanced)
-- [Full command catalog + design notes](docs/SOP.md) — for partners who want to understand the system in depth
 
 ---
 
