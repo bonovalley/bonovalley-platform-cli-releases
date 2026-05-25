@@ -162,7 +162,7 @@ What this does:
 - Extracts it into `<project_parent_dir>/my-integration` (e.g. `~/bonovalley-integrations/my-integration`)
 - Strips template-developer-only files (per `.bvtemplate-ignore`)
 
-If the target folder already exists and is non-empty, `init` refuses unless you pass `--force` (which wipes the folder first).
+If the target folder already exists and is non-empty, `init` refuses unless you pass `--force` (which wipes the folder contents first, **preserving any `.git/` directory** so your existing git history survives a re-init — handy for refreshing template files in a project you've already put under version control).
 
 After `init`, `cd` into the project:
 
