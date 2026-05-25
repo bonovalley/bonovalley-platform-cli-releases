@@ -232,7 +232,4 @@ Include all three of these in any bug report — they give the maintainers every
 
 Per-command help: `bonovalley-platform <command> --help`.
 
-Internal docs (for maintainers only):
-- [`docs/SOP.md`](SOP.md) — full command catalog
-- [`docs/DEPLOYMENT_SOP.md`](DEPLOYMENT_SOP.md) — release procedure
-- [`CHANGELOG.md`](../CHANGELOG.md) — per-release notes
+See also: [`CHANGELOG.md`](../CHANGELOG.md) for per-release notes, and [`docs/USER_GUIDE.md`](USER_GUIDE.md) for the end-to-end usage walkthrough.
