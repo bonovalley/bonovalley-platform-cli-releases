@@ -64,8 +64,8 @@ bonovalley-platform --version
 # Expected: bonovalley-platform-cli vX.Y.Z (commit ..., built YYYY-MM-DD)
 
 bonovalley-platform doctor
-# Expected on fresh install: 5/6 pass (the "Logged in" check fails until you run `login`)
-# Expected after login:      6/6 pass
+# Expected on fresh install: 5/7 pass (the two auth-related checks fail until you run `login`)
+# Expected after login:      7/7 pass
 ```
 
 ---
@@ -99,7 +99,7 @@ When you receive a release announcement (or want to check for one yourself), upg
    bonovalley-platform --version
    # Should now show the new version
    bonovalley-platform doctor
-   # Should still be 6/6 pass
+   # Should still be 7/7 pass
    ```
 
 ### Your config + integrations are preserved
