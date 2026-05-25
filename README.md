@@ -53,7 +53,7 @@ bonovalley-platform --version
 # Expected: bonovalley-platform-cli vX.Y.Z (commit ..., built ...)
 
 bonovalley-platform doctor
-# Expected on fresh install: 5/6 pass (the "Logged in" check fails until you run `login`)
+# Expected on fresh install: 5/7 pass (the two auth-related checks fail until you run `login`)
 ```
 
 ---
