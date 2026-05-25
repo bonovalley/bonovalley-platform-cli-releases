@@ -137,7 +137,7 @@ bonovalley-platform config set api_env dev   # talks to http://127.0.0.1:8000
 bonovalley-platform config set api_env prod  # talks to https://cli-api.bonovalley.com (default)
 ```
 
-URL overrides via env vars: see [`docs/ENV_VARS.md`](ENV_VARS.md).
+Advanced env-var overrides (for CI, corporate proxies, staging endpoints) exist via `BV_INTEGRATIONS_CLI_REST_API_URL_DEV` / `_PROD` — contact your Bonovalley point of contact if you need to point the CLI at a non-default URL.
 
 ### 3.5 Edit the JSON directly (escape hatch)
 
@@ -433,4 +433,3 @@ Contact your Bonovalley point of contact.
 - [`docs/INSTALL.md`](INSTALL.md) — install / upgrade / uninstall / troubleshooting
 - [`README.md`](../README.md) — quickstart + overview
 - [`CHANGELOG.md`](../CHANGELOG.md) — per-release notes
-- [`docs/ENV_VARS.md`](ENV_VARS.md) — environment variable overrides (advanced)
