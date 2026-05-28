@@ -95,6 +95,8 @@ bonovalley-platform push                    # build + ship to the platform
 
 Run `bonovalley-platform <command> --help` for any command's options, or `bonovalley-platform doctor` to check your environment.
 
+**App secrets / env vars (new in v1.1.0):** reference credentials by name in your integration code and submit the values per version with `env:set` / `env:get` / `env:unset` — e.g. `bonovalley-platform env:set 1.0.0 GOOGLE_CLIENT_SECRET=…`. Values are stored encrypted at rest and injected into your deployed integration at runtime; for local testing put the same `KEY=VALUE` lines in a `.env.development` file. See [User guide §6.5](docs/USER_GUIDE.md).
+
 ---
 
 ## Full docs (in this repo)
