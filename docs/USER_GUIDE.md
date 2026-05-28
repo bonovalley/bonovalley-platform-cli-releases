@@ -332,6 +332,41 @@ bonovalley-platform logout
 
 Removes the deployKey. Your registry + per-project markers stay. Next `login` brings auth back.
 
+### 6.5 Environment variables & secrets — `env:set` / `env:get` / `env:unset`
+
+Reference app-level credentials (OAuth client secret, API keys, signing secrets)
+**by name** in your integration code instead of hardcoding them:
+
+```go
+secret, _ := bv.Secrets.GetSecret(ctx, "GOOGLE_CLIENT_SECRET")
+clientSecret := secret.Value
+```
+
+Then submit the actual values out-of-band, scoped to a specific version, so they
+never end up in your source, the binary, git, or the review bundle. Values are
+stored encrypted at rest and injected into your running integration at deploy time.
+
+```bash
+# Set one or more. Version is the first argument; the integration is read from
+# the project marker, so run these from inside the project folder.
+bonovalley-platform env:set 1.0.0 GOOGLE_CLIENT_SECRET=abc123
+bonovalley-platform env:set 1.0.0 API_KEY=xyz WEBHOOK_TOKEN=t0ken
+
+# List what's set for a version (values shown)
+bonovalley-platform env:get 1.0.0
+
+# Remove one or more
+bonovalley-platform env:unset 1.0.0 API_KEY WEBHOOK_TOKEN
+```
+
+Notes:
+- Keys are normalised to `UPPER_SNAKE_CASE` (e.g. `google.client-secret` →
+  `GOOGLE_CLIENT_SECRET`), matching how your code reads them.
+- **Secrets are bound at deploy time.** A change via `env:set` takes effect on your
+  **next `push`/deploy** of that version, not on an already-running service.
+- **Local testing:** put the same `KEY=VALUE` lines in a `.env.development` file in
+  your project root — they're loaded automatically when you run the integration in dev.
+
 ---
 
 ## 7. Where things live on your machine
@@ -368,6 +403,9 @@ Run `bonovalley-platform <command> --help` for full flag detail on any of these.
 | `unlink <id>` | Stop tracking an integration on this machine |
 | `list` | Print every integration tracked on this machine |
 | `push` | Build + validate + upload the current integration to the platform |
+| `env:set <version> KEY=VALUE …` | Set integration env vars / secrets for a version (encrypted at rest) |
+| `env:get <version>` | List the env vars / secrets set for a version |
+| `env:unset <version> KEY …` | Remove env vars / secrets from a version |
 | `--version` | Print the CLI version, embedded commit, and build date |
 
 ### Commands shown in `--help` but not yet fully implemented
