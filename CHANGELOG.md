@@ -10,6 +10,32 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+## [v1.1.0] — 2026-05-28
+
+### Changed
+
+- `--help` usage text now reads `bonovalley-platform …` instead of `bonovalley …`,
+  matching the installed binary name and the docs (the root command's `Use:` was
+  aligned). No behavior change — only the help/usage strings.
+
+### Added
+
+- **`env:set` / `env:get` / `env:unset`** — manage integration-level environment
+  variables & secrets, scoped per version. Reference a secret by name in your
+  integration code (e.g. `bv.Secrets.GetSecret(ctx, "GOOGLE_CLIENT_SECRET")`) and
+  submit the value out-of-band so it never lands in source, the binary, git, or
+  the review bundle:
+    - `bonovalley-platform env:set <version> KEY=VALUE [KEY=VALUE ...]`
+    - `bonovalley-platform env:get <version>`
+    - `bonovalley-platform env:unset <version> KEY [KEY ...]`
+  The integration is taken from the project marker (`.bonovalley/integration.json`);
+  the version is the first positional argument. Keys are normalised to
+  `UPPER_SNAKE_CASE`. Values are stored **encrypted at rest** (AWS KMS envelope
+  encryption) keyed to the integration + version; at deploy time the platform
+  injects them into the running service, where integration code reads them via the
+  standard secrets API. For local testing, put the same `KEY=VALUE` lines in a
+  project-root `.env.development` file (loaded automatically in dev).
+
 ## [v1.0.2] — 2026-05-25
 
 ### Changed
