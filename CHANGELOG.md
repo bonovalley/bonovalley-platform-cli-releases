@@ -10,6 +10,57 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+## [v1.1.1] — 2026-05-29
+
+### Added
+
+- **`push` env-vars confirmation.** Before the build, `push` now asks
+  *"Have you already set your environment variables?"* (`yes` / `no` /
+  `not-required`). Answering **no** stops the push *before* the 2-3 minute build
+  and prints the exact `env:set` / `env:get` commands to run — so a forgotten
+  secret no longer surfaces as a broken deploy minutes later. Answering **yes**
+  or **not-required** continues as before.
+    - New `-y` / `--yes` flag skips the prompt (for scripted use).
+    - The prompt is **skipped automatically when stdin is not a terminal**
+      (CI / piped input), so automation never blocks. The chosen answer — or the
+      skip reason — is recorded in the per-run log.
+
+- **`init` location confirmation + `-d` / `--dir`.** `init <name>` now shows the
+  full target path and asks you to confirm *before* creating anything, so a
+  project no longer lands in an unexpected folder. New `-d` / `--dir <path>`
+  overrides the destination for a single run without touching config; answering
+  **no** points you at `--dir` and `config set project_parent_dir` rather than
+  hand-editing JSON. Skipped by `-y` / `--yes` and on non-interactive stdin (CI).
+
+- **`link <id>` now finds — or asks for — the project folder.** Instead of
+  blindly using the current directory, `link <id>` resolves the target in order:
+  `-d` / `--dir <path>`, a marker in the current folder's tree, the current
+  folder if it's a project, otherwise an interactive picker over the projects in
+  your `project_parent_dir` ("which project should it link to?"). This makes the
+  `init` → `link` flow work without `register` when the integration already
+  exists (e.g. created earlier, or on another machine). New `-d` / `--dir` flag
+  plus an Examples block in `--help`.
+
+### Changed
+
+- **Self-teaching `--help`.** Every user-facing command now carries a commented
+  `Examples:` block (`init`, `push`, `register`, `link`, `env:set` / `env:get` /
+  `env:unset`) so each flag and mode has a "use this when…" example — e.g.
+  `init`'s `--dir`, `push`'s `--yes`. Misusing a command's arguments now prints
+  its help (with those examples) instead of a bare error, and the interactive
+  prompts (init's "no", push's "no", link's picker) point you at the relevant
+  `--help`.
+
+### Fixed
+
+- **`link <id>` could write the project marker into the wrong folder.** Run from
+  a directory that wasn't an integration project (e.g. your home folder),
+  `link <id>` wrote `.bonovalley/integration.json` into the current directory —
+  which in your home folder collided with the CLI's own `~/.bonovalley` state dir
+  and could make later commands mistake home for an integration project. `link`
+  now refuses to write into `~/.bonovalley` and requires the target to look like
+  a real project, so the marker always lands in the right place.
+
 ## [v1.1.0] — 2026-05-28
 
 ### Changed
