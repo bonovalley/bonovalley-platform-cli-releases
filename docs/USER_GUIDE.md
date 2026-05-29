@@ -157,6 +157,24 @@ End-to-end: scaffold a new project, claim it on the platform, write your code, s
 bonovalley-platform init my-integration
 ```
 
+Before creating anything, `init` shows the full target path and asks you to confirm:
+
+```
+Your new project will be created at:
+  C:\Users\you\bonovalley-integrations\my-integration
+  (parent from "project_parent_dir" in your config)
+
+Create it here? [Y/n]:
+```
+
+Press Enter (or `y`) to proceed. Answer **n** to stop without creating anything — the CLI then shows how to pick a different location. To send a single project somewhere else without changing your default, pass `-d` / `--dir`:
+
+```bash
+bonovalley-platform init my-integration --dir D:\work\integrations
+```
+
+(`-y` / `--yes` skips the confirmation; it's also skipped automatically in non-interactive / CI runs.)
+
 What this does:
 - Downloads the latest **integration template** from the Bonovalley template repo
 - Extracts it into `<project_parent_dir>/my-integration` (e.g. `~/bonovalley-integrations/my-integration`)
@@ -207,7 +225,14 @@ When your code is ready:
 bonovalley-platform push
 ```
 
-The CLI runs a 7-phase pipeline:
+Before the build, push asks whether you've set this integration's environment
+variables — answer **yes**, **no**, or **not-required**. Answering **no** stops
+immediately (before the long build) and shows the `env:set` commands to run, so
+a missing secret doesn't turn into a broken deploy (see §6.5 below). Add
+`-y` / `--yes` to skip the question; it's also skipped automatically in
+non-interactive / CI runs.
+
+The CLI then runs a 7-phase pipeline:
 
 ```
 → Pre-flight: integration <id> (<key>), bv_organization_id <uuid>
@@ -265,20 +290,43 @@ ID     KEY              NAME              PATH                                  
 
 `stale` means the folder no longer exists on disk (moved, deleted, or external drive unmounted). Stale rows aren't auto-cleaned — use `unlink <id>` if you're sure.
 
-### 5.2 `link` — pick up an existing integration on a new machine
+### 5.2 `link` — track an existing integration (clone, new machine, or attach an init'd project)
 
-If you've cloned an integration project that was registered on a different machine, your local registry doesn't know about it yet. Two forms:
+Use `link` when an integration **already exists** on the platform and you want this machine/folder to point at it — you cloned the repo onto a new machine, you lost your local registry, or you just `init`ed a fresh project and want to attach it to an existing integration **without** running `register` (which would create a *new* one).
 
 ```bash
 # From inside the project folder (reads .bonovalley/integration.json):
-cd ~/integrations/google-gemini
+cd "G:\…\7_Integrations\google-gemini"
 bonovalley-platform link
 
-# Or from anywhere by integration id (also writes the marker file into cwd):
+# By integration id — link works out which folder to attach:
 bonovalley-platform link 13021
+
+# Point it at a specific folder (no prompts; use this in scripts / CI):
+bonovalley-platform link 13021 --dir "G:\…\7_Integrations\google-gemini"
 ```
 
-Both check that you actually own the integration on the platform (403 if not).
+When you pass an `<id>`, `link` decides which project folder to attach, in this order:
+
+1. `-d` / `--dir <path>` if you gave one;
+2. a marker already present in the current folder (or an ancestor);
+3. the current folder, if it looks like an integration project;
+4. otherwise it **asks** — listing the projects under your `project_parent_dir`:
+
+```
+Integration 13021 (google-gemini) isn't linked to a project on this machine yet.
+Which project should it link to?
+Projects in G:\…\7_Integrations:
+  [1] google-gemini      (not linked yet)
+  [2] another-proj       (linked to 13055)
+  [c] enter a custom path
+  [q] cancel
+Choose:
+```
+
+It then writes `.bonovalley/integration.json` into the folder you choose and records it in your registry. Safeguards: it **never** writes into the CLI's own `~/.bonovalley` state folder, and the target must look like a real integration project.
+
+Both forms check that you actually **own** the integration on the platform (403 if not — so an integration created by a teammate can't be linked yet).
 
 ### 5.3 `unlink` — stop tracking on this machine
 
@@ -366,6 +414,9 @@ Notes:
   **next `push`/deploy** of that version, not on an already-running service.
 - **Local testing:** put the same `KEY=VALUE` lines in a `.env.development` file in
   your project root — they're loaded automatically when you run the integration in dev.
+- **`push` reminds you.** Before each build, `push` asks whether your env vars are
+  set. Answer **no** to bail out and set them first; pass `-y` / `--yes` (or run in
+  CI) to skip the prompt.
 
 ---
 
@@ -397,12 +448,12 @@ Run `bonovalley-platform <command> --help` for full flag detail on any of these.
 | `doctor` | 7-check pre-flight; safe to run anywhere |
 | `config get [key]` | Print one or all config settings |
 | `config set <key> <value>` | Update a config setting |
-| `init <name>` | Scaffold a new integration project from the template |
+| `init <name>` | Scaffold a new integration project from the template (confirms the location first; `-d` / `--dir <path>` overrides where, `-y` / `--yes` skips the prompt) |
 | `register` | Interactive: claim a new integration on the platform; writes marker + registry |
-| `link [<id>]` | Track an existing integration on this machine (with or without id) |
+| `link [<id>]` | Track an existing integration on this machine; `link <id>` works out (or asks) which project folder to attach (`-d` / `--dir <path>` to set it explicitly) |
 | `unlink <id>` | Stop tracking an integration on this machine |
 | `list` | Print every integration tracked on this machine |
-| `push` | Build + validate + upload the current integration to the platform |
+| `push` | Build + validate + upload the current integration (asks you to confirm env vars are set first; `-y` / `--yes` skips) |
 | `env:set <version> KEY=VALUE …` | Set integration env vars / secrets for a version (encrypted at rest) |
 | `env:get <version>` | List the env vars / secrets set for a version |
 | `env:unset <version> KEY …` | Remove env vars / secrets from a version |
