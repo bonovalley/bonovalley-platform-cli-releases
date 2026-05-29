@@ -8,7 +8,7 @@ The Bonovalley CLI lets integration partners build, register, and `push` integra
 
 ## Install
 
-Pick the file that matches your OS from the [latest release](https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest):
+Pick the file that matches your OS from the [latest release](https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest). In the `curl` commands below, replace `vX.Y.Z` with that release's version (it's in every filename, e.g. `v1.1.0`):
 
 | OS | File |
 |---|---|
@@ -28,7 +28,7 @@ Pick the file that matches your OS from the [latest release](https://github.com/
 
 ```bash
 curl -L -o bonovalley-platform \
-  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest/download/bonovalley-platform-darwin-arm64"
+  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/download/vX.Y.Z/bonovalley-platform-vX.Y.Z-darwin-arm64"
 chmod +x bonovalley-platform
 sudo mv bonovalley-platform /usr/local/bin/
 bonovalley-platform --version
@@ -40,7 +40,7 @@ bonovalley-platform --version
 
 ```bash
 curl -L -o bonovalley-platform \
-  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest/download/bonovalley-platform-linux-amd64"
+  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/download/vX.Y.Z/bonovalley-platform-vX.Y.Z-linux-amd64"
 chmod +x bonovalley-platform
 sudo mv bonovalley-platform /usr/local/bin/
 bonovalley-platform --version
