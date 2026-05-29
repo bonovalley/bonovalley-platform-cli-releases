@@ -10,6 +10,8 @@ Releases live at: <https://github.com/bonovalley/bonovalley-platform-cli-release
 
 ## 1. First-time install
 
+> In the `curl` commands below, replace `vX.Y.Z` with the version from the [latest release](https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest) (it's in every asset's filename, e.g. `v1.1.0`).
+
 ### Windows
 
 1. Download `bonovalley-platform-vX.Y.Z-windows-amd64.exe` from the [latest release](https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest).
@@ -33,7 +35,7 @@ If Windows SmartScreen blocks the download or first run, see [§6 Troubleshootin
 
 ```bash
 curl -L -o bonovalley-platform \
-  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest/download/bonovalley-platform-darwin-arm64"
+  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/download/vX.Y.Z/bonovalley-platform-vX.Y.Z-darwin-arm64"
 chmod +x bonovalley-platform
 sudo mv bonovalley-platform /usr/local/bin/
 bonovalley-platform --version
@@ -49,7 +51,7 @@ Same as Apple Silicon — replace `darwin-arm64` with `darwin-amd64` in the URL.
 
 ```bash
 curl -L -o bonovalley-platform \
-  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/latest/download/bonovalley-platform-linux-amd64"
+  "https://github.com/bonovalley/bonovalley-platform-cli-releases/releases/download/vX.Y.Z/bonovalley-platform-vX.Y.Z-linux-amd64"
 chmod +x bonovalley-platform
 sudo mv bonovalley-platform /usr/local/bin/
 bonovalley-platform --version
