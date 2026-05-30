@@ -10,6 +10,29 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+## [v1.1.2] — 2026-05-30
+
+### Changed
+
+- **`push`, `register`, `link`, `env:set` / `env:get` / `env:unset` `--help` now
+  carry a `Prerequisites:` block.** A bulleted checklist of what state must
+  exist before running (cwd inside the project, logged in, env vars set, etc.).
+  Discovered in v1.1.1 use: a developer hit the "not inside a project" error
+  and didn't realise `push` requires `cd`-ing into the project folder — the
+  help never said so. A new convention test (`cmd_help_test.go`) enforces the
+  block on every `go test ./...` so it can't quietly rot.
+
+### Fixed
+
+- **The "not inside an integration project" error now self-diagnoses.**
+  Previously it said *"Run 'bonovalley-platform link' first"* even when the
+  integration **was already linked**, just in a folder different from `cwd` —
+  the suggested fix was wrong. The error now reads the registry and, when one
+  or more integrations are linked with valid on-disk paths, lists them and
+  tells you to `cd` into the right one. With nothing linked, it falls back to
+  "register or link first". Applies to `push`, `link` (no-arg), `env:set` /
+  `env:get` / `env:unset`.
+
 ## [v1.1.1] — 2026-05-29
 
 ### Added
