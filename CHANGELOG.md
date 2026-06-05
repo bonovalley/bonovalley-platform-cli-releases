@@ -10,6 +10,8 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+## [v1.2.0] — 2026-06-05
+
 ### Changed
 
 - **`register` now collects one or more categories instead of a single
