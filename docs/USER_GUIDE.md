@@ -202,7 +202,7 @@ This prompts you for 7 fields:
 | `name` | `My Integration` | Display name on the marketplace |
 | `description` | `Does X for Y.` | Required |
 | `website` | `https://example.com/my-integration` | Required |
-| `category` | `productivity` | Pick from the list shown |
+| `categories` | `productivity, storage` | One or more, comma-separated |
 | `intended_audience` | `business` | Pick from the list shown |
 | `relationship_with_app` | `bv_employee` or `bv_partner` | Pick from the list shown |
 
