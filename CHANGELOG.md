@@ -10,6 +10,15 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+### Changed
+
+- **`register` now collects one or more categories instead of a single
+  category.** The platform's integration registry replaced the `category`
+  column with a `categories` list, so the prompt is now
+  `Categories (comma-separated):` (e.g. `Storage, Productivity`) and the
+  CLI sends `categories` (a JSON array) to `POST /integrations`. At least
+  one category is still required.
+
 ## [v1.1.2] — 2026-05-30
 
 ### Changed
