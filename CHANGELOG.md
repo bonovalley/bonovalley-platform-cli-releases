@@ -19,6 +19,17 @@ Each entry's date is the date that release was **tagged + published to the GitHu
   version — instead of the generic "platform had an internal error / try
   again" advice.
 
+### Fixed
+
+- **Server error details are no longer hidden behind generic messages.**
+  `register`, `link`, `env:set` / `env:get` / `env:unset`, and `doctor` used
+  to reduce any server-side failure to "The platform had an internal error" —
+  with no way to identify the actual problem. They now always append the real
+  server message and status code, e.g.
+  `The platform had an internal error. Try again in a minute... (HTTP 503:
+  integration secrets backend unavailable: connection refused)`.
+  (`push` already did this via its `Detail:` line.)
+
 ## [v1.2.0] — 2026-06-05
 
 ### Changed
