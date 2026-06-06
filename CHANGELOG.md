@@ -10,6 +10,15 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+### Changed
+
+- **`push` now explains the "removed trigger still in use" conflict.** When a
+  re-pushed version removes a trigger that existing Bonos depend on, the
+  platform refuses the change (HTTP 409). The CLI now translates that into a
+  clear message — restore the trigger, or publish the removal as a new
+  version — instead of the generic "platform had an internal error / try
+  again" advice.
+
 ## [v1.2.0] — 2026-06-05
 
 ### Changed
