@@ -10,6 +10,8 @@ Each entry's date is the date that release was **tagged + published to the GitHu
 
 ## [Unreleased]
 
+## [v1.2.1] — 2026-06-06
+
 ### Changed
 
 - **`push` now explains the "removed trigger still in use" conflict.** When a
